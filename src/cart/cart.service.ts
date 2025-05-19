@@ -46,20 +46,17 @@ export class CartService {
       throw new BadRequestException('Invalid user ID.');
     }
 
-  
     const foundCarts = await this.cartModel
       .find({ user: userId })
       .populate('product');
 
     let subtotal = 0;
     foundCarts.forEach((cart) => {
-      subtotal += cart.product.price * cart.quantity; 
+      subtotal += cart.product.price * cart.quantity;
     });
 
-
     const shipping = 4.99;
-    const tax = subtotal * 0.08; 
-
+    const tax = subtotal * 0.08;
 
     const total = subtotal + shipping + tax;
 
@@ -103,11 +100,7 @@ export class CartService {
     };
   }
 
-  async clearUserCart(userId: string): Promise<void> {
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new BadRequestException('Invalid user ID.');
-    }
-
-    await this.cartModel.deleteMany({ userId });
+  async clearUserCart(userId: any): Promise<void> {
+    await this.cartModel.deleteMany({ user: userId });
   }
 }

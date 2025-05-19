@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -10,21 +18,24 @@ import { Order } from './order.mongo';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  // Create a new order
-  // @Post()
-  // @ApiOperation({ summary: 'Create a new order' })
-  // @ApiResponse({ status: 201, description: 'Order successfully created', type: Order })
-  // @ApiResponse({ status: 400, description: 'Bad Request' })
-  // async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
-  //   return this.orderService.create(createOrderDto);
-  // }
+  @Post()
+  @ApiOperation({ summary: 'Create a new order' })
+  @ApiResponse({
+    status: 201,
+    description: 'Order successfully created',
+    type: Order,
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
+    return this.orderService.create(createOrderDto);
+  }
 
   // Get all orders
-  @Get()
-  @ApiOperation({ summary: 'Get all orders' })
+  @Get(':userId')
+  @ApiOperation({ summary: 'Get all orders for a user' })
   @ApiResponse({ status: 200, description: 'List of orders', type: [Order] })
-  async findAll(): Promise<Order[]> {
-    return this.orderService.findAll();
+  async findAll(@Param('userId') userId: string): Promise<Order[]> {
+    return this.orderService.findAll(userId);
   }
 
   // Get an order by ID
@@ -39,10 +50,17 @@ export class OrderController {
   // Update an order by ID
   @Put(':id')
   @ApiOperation({ summary: 'Update an order by ID' })
-  @ApiResponse({ status: 200, description: 'Order updated successfully', type: Order })
+  @ApiResponse({
+    status: 200,
+    description: 'Order updated successfully',
+    type: Order,
+  })
   @ApiResponse({ status: 404, description: 'Order not found' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<Order> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ): Promise<Order> {
     return this.orderService.update(id, updateOrderDto);
   }
 
@@ -53,5 +71,12 @@ export class OrderController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   async remove(@Param('id') id: string): Promise<Order> {
     return this.orderService.remove(id);
+  }
+
+  @Get('/sales/daily')
+  @ApiOperation({ summary: 'Get daily sales data for bar chart' })
+  @ApiResponse({ status: 200, description: 'Sales data by day' })
+  async getDailySales() {
+    return this.orderService.getDailySales();
   }
 }

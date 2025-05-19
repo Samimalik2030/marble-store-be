@@ -11,10 +11,9 @@ import { ShippingAdress } from './order.dto';
 
 @MongoSchema()
 export class Order extends BaseSchema {
-  @ApiProperty({ type: [Product] })
-  @Prop({ type: [{ type: Schema.Types.ObjectId, ref: 'Product' }], required: true })
-  @Transform(({ value }) => value.map(transformObjectId))
-  products: Product[];
+  @ApiProperty({ type: [String] })
+  @Prop({type:[String]})
+  products: string[];
 
   @ApiProperty({ type: () => User })
   @Prop({ type: Schema.Types.ObjectId, ref: 'User', required: true })
@@ -24,6 +23,11 @@ export class Order extends BaseSchema {
   @ApiProperty({ example: 'Processing' })
   @Prop({ default: 'Pending' })
   status: string;
+
+
+  @ApiProperty({ example: 'Processing' })
+  @Prop({ default: 'Pending' })
+  code: string;
 
   @ApiProperty({ example: 1200 })
   @Prop({ required: true })
